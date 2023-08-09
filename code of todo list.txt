@@ -1,0 +1,260 @@
+MyComponents
+app.component.html
+<!-- <h1> this is {{title}}</h1>
+<div><p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa voluptatibus repudiandae at,
+   numquam facilis quaerat. Atque provident asperiores earum animi, vero quo,
+   odit natus explicabo cum possimus dolores totam. Deserunt consequatur nobis nemo ipsum.</p></div>
+-->
+   <!--using component created in my components as todos' html.-->
+   <div>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+         <div class="container-fluid">
+           <a class="navbar-brand" href="#">Todos List</a>
+           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+             <span class="navbar-toggler-icon"></span>
+           </button>
+           <div class="collapse navbar-collapse" id="navbarSupportedContent">
+             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                 <a class="nav-link active" aria-current="page" href="#">Home</a>
+               </li>
+               <li class="nav-item">
+                 <a class="nav-link" href="#">Link</a>
+               </li>
+               <li class="nav-item dropdown">
+                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                   Dropdown
+                 </a>
+                 <ul class="dropdown-menu">
+                   <li><a class="dropdown-item" href="#">Action</a></li>
+                   <li><a class="dropdown-item" href="#">Another action</a></li>
+                   <li><hr class="dropdown-divider"></li>
+                   <li><a class="dropdown-item" href="#">Something else here</a></li>
+                 </ul>
+               </li>
+               <!-- <li class="nav-item">
+                 <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+               </li> -->
+             </ul>
+             <!-- <form class="d-flex" role="search">
+               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+               <button class="btn btn-outline-success" type="submit">Search</button>
+             </form> -->
+           </div>
+         </div>
+       </nav>
+   <h1 class="text-center">Welcome To Todos List</h1>
+   <div class="container">
+   <app-to-dos></app-to-dos>
+   </div>
+</div>
+-----------------------
+app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'To Do List';
+  // constructor(){
+  //   setTimeout(() => {
+  //     this.title="changed To Do List";
+  //   }, 2000);
+  // }
+ 
+}
+--------------------------------------
+Todo.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'To Do List';
+  // constructor(){
+  //   setTimeout(() => {
+  //     this.title="changed To Do List";
+  //   }, 2000);
+  // }
+ 
+}
+
+
+----------------------
+
+
+
+
+add-tod
+add-tod.component.css
+add-tod.component.html
+<div class="my-3">
+
+    <h4>Add a Todo</h4>
+    <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="Title" class="form-label">Todo Title</label>
+            <input type="text" [(ngModel)]="title1" class="form-control" id="title" name="title" aria-describedby="emailHelp">
+            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+        <div class="form-group">
+            <label for="desc" class="form-label">Todo Description</label>
+            <input type="text" [(ngModel)]="desc" class="form-control" id="desc" name="desc">
+    </div>
+    <!-- <div class="mb-3 form-group">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div> -->
+    <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+</form>
+</div>
+add-tod.component.ts
+import { Component, EventEmitter,Output } from '@angular/core';
+import { Todo } from 'src/app/Todo';
+
+@Component({
+  selector: 'app-add-tod',
+  templateUrl: './add-tod.component.html',
+  styleUrls: ['./add-tod.component.css']
+})
+export class AddTodComponent {
+title1!:string;
+desc!:string;
+@Output() todoAdd: EventEmitter<Todo> =new EventEmitter();
+onSubmit(){
+  const todo:Todo=new Todo;
+  todo.title=this.title1;
+  todo.desc=this.desc;
+
+  // const sno:number =8;
+  
+  // const todo={
+  //   sno:8,
+  //   title:this.title1,
+  //   desc:this.desc,
+  //   active:true, 
+  //   ret:"wret"
+  // }
+
+  this.todoAdd.emit(todo);
+  this.title1="";
+  this.desc="";
+
+}
+}
+to-dos
+to-dos.component.html
+  
+ <!-- <p>to-dos works!</p> -->
+ 
+
+<!-- <ul *ngFor="let Todo of todoshere">
+    <li>{{Todo.sno}}-{{Todo.title}}-{{Todo.desc}}</li>
+</ul> -->
+
+<app-add-tod (todoAdd)="addTodo($event)"></app-add-tod>
+<h4>Your Todos</h4>
+
+<div *ngIf="this.todoshere.length===0; else empty">
+    No Todos to display
+  </div>
+  <ng-template #empty>
+      <div *ngFor="let Todo of todoshere">
+          <app-todo-item [Todo]="Todo" (todoDelete)="deleteTodo($event)"></app-todo-item>
+        </div>  
+    </ng-template>
+to-dos.component.ts
+import { Component } from '@angular/core';
+import { Todo } from 'src/app/Todo';
+@Component({
+  selector: 'app-to-dos',
+  templateUrl: './to-dos.component.html',
+  styleUrls: ['./to-dos.component.css'],
+})
+export class ToDosComponent {
+  todoshere!: Todo[];
+
+  constructor() {
+    var localItem = localStorage.getItem('todosherekey');
+    // var localItem1=sessionStorage.getItem("todosherekey");
+
+    if (localItem == null) {
+      this.todoshere = [];
+    } else {
+      this.todoshere = JSON.parse(localItem);
+    }
+    // this.todoshere = [
+    //   {
+    //     sno: 1,
+    //     title: 'This is title',
+    //     desc: 'this is description',
+    //     active: true,
+    //   },
+    //   {
+    //     sno: 2,
+    //     title: 'This is title2',
+    //     desc: 'this is description',
+    //     active: true,
+    //   },
+    //   {
+    //     sno: 3,
+    //     title: 'This is title3',
+    //     desc: 'this is description',
+    //     active: true,
+    //   },
+    // ];
+  }
+  deleteTodo(todo: Todo) {
+    const index = this.todoshere.indexOf(todo);
+    this.todoshere.splice(index, 1);
+    console.log(todo);
+    localStorage.setItem('todosherekey', JSON.stringify(this.todoshere));
+    //sessionStorage.setItem("todosherekey",JSON.stringify(this.todoshere));
+  }
+  addTodo(todo: Todo) {
+    if (todo.title == null || todo.title == '') {
+      alert('Please enter the title');
+    } else if (todo.desc == null || todo.desc == '') {
+      alert('Please enter the description');
+    } else {
+      this.todoshere.push(todo);
+      console.log(todo);
+      localStorage.setItem('todosherekey', JSON.stringify(this.todoshere));
+      //sessionStorage.setItem("todosherekey",JSON.stringify(this.todoshere));
+    }
+  }
+}
+todo-item
+todo-item.component.html
+<div class="my-3">
+    <h5>{{Todo.title}}</h5>
+    <p>{{Todo.desc}}</p>
+    <button class="btn btn-sm btn-danger" (click)="onclick(Todo)" >Delete</button>
+</div>
+
+todo-item.component.ts
+import { Component,EventEmitter,Input, Output } from '@angular/core';
+import { Todo } from 'src/app/Todo';
+
+@Component({
+  selector: 'app-todo-item',
+  templateUrl: './todo-item.component.html',
+  styleUrls: ['./todo-item.component.css']
+})
+export class TodoItemComponent {
+@Input() Todo !:Todo;
+@Output() todoDelete:EventEmitter<Todo> =new EventEmitter<Todo>();
+onclick(Todo:Todo){
+   this.todoDelete.emit(Todo);
+  console.log("onclick has been triggered")
+}
+}
+
+
+
